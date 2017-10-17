@@ -8,7 +8,9 @@
  * @link       https://github.com/kenjis/ci-phpunit-test
  */
 
-class Mock_Libraries_Email
+namespace CI\Mocks\Common\Libraries;
+
+class Email
 {
 	private $data = [];
 

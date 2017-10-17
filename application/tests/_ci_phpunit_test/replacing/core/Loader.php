@@ -124,6 +124,8 @@ class CI_Loader {
 		'user_agent' => 'agent'
 	);
 
+    public static $mock_spaces = ['common'];
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -1090,6 +1092,17 @@ class CI_Loader {
 		{
 			return $this->_ci_load_stock_library($class, $subdir, $params, $object_name);
 		}
+
+        //Check if the class should be swapped for a mocked version
+        if(isset(CI_Loader::$mock_spaces)){
+            foreach(CI_Loader::$mock_spaces as $directory){
+                if (file_exists(APPPATH.'tests/mocks/'.$directory.'/libraries/'.$subdir.$class.'.php')){
+                    require_once(APPPATH.'tests/mocks/'.$directory.'/libraries/'.$subdir.$class.'.php');
+                    return $this->_ci_init_library("\\CI\\Mocks\\".ucfirst($directory).'\\Libraries\\'.str_replace(DIRECTORY_SEPARATOR, '_',$class), '', $params, strtolower($class));
+                }
+            }
+        }
+        
 
 		// Let's search for the requested library file and load it.
 		foreach ($this->_ci_library_paths as $path)
